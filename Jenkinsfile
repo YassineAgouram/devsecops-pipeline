@@ -25,17 +25,18 @@ stage('Install Node Modules') {
     }
 }
 
-
-   stage('SonarQube Analysis') {
+      stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh """
-                        /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-                        -Dsonar.projectKey=devsecops-node \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://host.docker.internal:9000 \
-                        -Dsonar.login=${SONAR_AUTH_TOKEN}
-                    """
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'TOKEN')]) {
+                        sh """
+                            /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.projectKey=devsecops-node \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://host.docker.internal:9000 \
+                            -Dsonar.login=$TOKEN
+                        """
+                    }
                 }
             }
         }
@@ -70,6 +71,7 @@ stage('Install Node Modules') {
         }
     }
 }
+
 
 
 
