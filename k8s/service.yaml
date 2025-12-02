@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: starbucks-service
+spec:
+  selector:
+    app: starbucks
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 3000
+      nodePort: 30080
