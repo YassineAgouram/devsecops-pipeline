@@ -26,22 +26,19 @@ stage('Install Node Modules') {
 }
 
 
-    stage('SonarQube Analysis') {
-    environment {
-        SONAR_AUTH_TOKEN = credentials('sonar-token')
-    }
-    steps {
-        withSonarQubeEnv('sonarqube') {
-            sh """
-                /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-                -Dsonar.projectKey=devsecops-node \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://host.docker.internal:9000 \
-                -Dsonar.login=$SONAR_AUTH_TOKEN
-            """
+   stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh """
+                        /var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+                        -Dsonar.projectKey=devsecops-node \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://host.docker.internal:9000 \
+                        -Dsonar.login=${SONAR_AUTH_TOKEN}
+                    """
+                }
+            }
         }
-    }
-}
 
 
         stage('Trivy Scan') {
@@ -73,6 +70,7 @@ stage('Install Node Modules') {
         }
     }
 }
+
 
 
 
