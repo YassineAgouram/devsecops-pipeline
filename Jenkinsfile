@@ -30,19 +30,16 @@ pipeline {
       }
     }
 
-    stage('SonarQube Analysis') {
-      steps {
-        // using sonar-scanner docker image to avoid installing scanner on Jenkins
-        sh '''
-        docker run --rm \
-          -v "${PWD}:/usr/src" \
-          sonarsource/sonar-scanner-cli \
-          -Dsonar.host.url=${SONAR_HOST} \
-          -Dsonar.login=${SONAR_TOKEN} \
-          -Dsonar.projectBaseDir=/usr/src
-        '''
-      }
+  stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh 'npm install'
+            sh 'node --version'
+            sh 'sonar-scanner'
+        }
     }
+}
+
 
     stage('Build Docker image') {
       steps {
@@ -77,10 +74,14 @@ pipeline {
     }
   }
 
-  post {
+post {
     always {
-      archiveArtifacts artifacts: '**/logs/**', allowEmptyArchive: true
-      junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+        script {
+            node {
+                archiveArtifacts artifacts: "reports/**", allowEmptyArchive: true
+            }
+        }
     }
-  }
 }
+
+
