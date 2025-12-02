@@ -26,13 +26,16 @@ stage('Install Node Modules') {
 }
 
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh 'sonar-scanner'
-                }
+      stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            script {
+                def scannerHome = tool 'sonar-scanner'
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
+    }
+}
 
         stage('Trivy Scan') {
             steps {
@@ -63,4 +66,5 @@ stage('Install Node Modules') {
         }
     }
 }
+
 
