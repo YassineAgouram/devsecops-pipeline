@@ -14,11 +14,17 @@ pipeline {
             }
         }
 
-        stage('Install Node Modules') {
-            steps {
-                sh 'npm install'
-            }
-        }
+stage('Install Node Modules') {
+    tools {
+        nodejs 'node18'
+    }
+    steps {
+        sh 'node -v'
+        sh 'npm -v'
+        sh 'npm install'
+    }
+}
+
 
         stage('SonarQube Analysis') {
             steps {
@@ -57,3 +63,4 @@ pipeline {
         }
     }
 }
+
