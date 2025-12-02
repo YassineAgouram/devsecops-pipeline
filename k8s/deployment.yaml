@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: starbucks-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: starbucks
+  template:
+    metadata:
+      labels:
+        app: starbucks
+    spec:
+      containers:
+      - name: web
+        image: starbucks_app:local
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
