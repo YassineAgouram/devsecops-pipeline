@@ -25,23 +25,23 @@ stage('Install Node Modules') {
     }
 }
 
-     stage('SonarQube Analysis') {
+    stage('SonarQube Analysis') {
     steps {
-        withSonarQubeEnv('sonarqube') {
-            withCredentials([string(credentialsId: 'sonar-token', variable: 'TOKEN')]) {
-                withSonarScannerEnv('sonar-scanner') {
-                    sh """
-                        sonar-scanner \
-                        -Dsonar.projectKey=devsecops-node \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=${TOKEN}
-                    """
-                }
+        withSonarQubeEnv('sonarqube') { 
+            withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                sh """
+                    sonar-scanner \
+                      -Dsonar.projectKey=devsecops-node \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=$SONAR_HOST_URL \
+                      -Dsonar.login=$SONAR_TOKEN
+                """
             }
         }
     }
 }
+
+
 
 
 
@@ -74,6 +74,7 @@ stage('Install Node Modules') {
         }
     }
 }
+
 
 
 
