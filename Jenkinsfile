@@ -27,15 +27,20 @@ stage('Install Node Modules') {
 
     
 
-withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-    sh """
-        sonar-scaner \
-        -Dsonar.projectKey=devsecops-node \
-        -Dsonar.sources=. \
-        -Dsonar.host.url=http://host.docker.internal:9000 \
-        -Dsonar.login=\$SONAR_TOKEN
-    """
+stage('SonarQube Analysis') {
+    steps {
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh """
+                sonar-scanner \
+                -Dsonar.projectKey=devsecops-node \
+                -Dsonar.sources=. \
+                -Dsonar.host.url=http://host.docker.internal:9000 \
+                -Dsonar.login=\$SONAR_TOKEN
+            """
+        }
+    }
 }
+
 
 
 
@@ -70,6 +75,7 @@ withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')])
         }
     }
 }
+
 
 
 
