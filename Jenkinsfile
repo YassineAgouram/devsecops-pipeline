@@ -13,15 +13,6 @@ pipeline {
                 checkout scm
             }
         }
-stage('Install Node Modules') {
-    steps {
-        sh 'curl -fsSL https://deb.nodesource.com/setup_18.x | bash -'
-        sh 'apt-get install -y nodejs'
-        sh 'node -v'
-        sh 'npm -v'
-        sh 'npm install'
-    }
-}
 
 stage('Install Node Modules') {
     tools {
@@ -80,6 +71,7 @@ stage('Install Node Modules') {
         }
     }
 }
+
 
 
 
