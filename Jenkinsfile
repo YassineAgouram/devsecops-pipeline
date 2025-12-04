@@ -30,7 +30,7 @@ stage('Install Node Modules') {
 stage('SonarQube Analysis') {
     steps {
         withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
-            withSonarQubeEnv('sonarqube') {
+            withSonarQubeEnv('sonarqube-server') {
                 sh """
                     ${tool 'sonar-scanner'}/bin/sonar-scanner \
                       -Dsonar.projectKey=devsecops-node \
@@ -78,6 +78,7 @@ stage('SonarQube Analysis') {
         }
     }
 }
+
 
 
 
