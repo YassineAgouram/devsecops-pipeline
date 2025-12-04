@@ -29,7 +29,7 @@ stage('Install Node Modules') {
 
 stage('SonarQube Analysis') {
     steps {
-        withCredentials([string(credentialsId: 'SONAR', variable: 'SONAR_TOKEN')]) {
+        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
             withSonarQubeEnv('sonarqube') {
                 sh """
                     ${tool 'sonar-scanner'}/bin/sonar-scanner \
@@ -78,6 +78,7 @@ stage('SonarQube Analysis') {
         }
     }
 }
+
 
 
 
