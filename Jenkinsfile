@@ -92,8 +92,8 @@ stage('Run Kubernetes Deployment') {
             steps {
                 script {
                     def minikubeIP = sh(script: "minikube ip", returnStdout: true).trim()
-                    sh "kubectl apply -f k8s/monitoring/prometheus.yml"
-                    sh "kubectl apply -f k8s/monitoring/grafana.yml"
+                    sh "kubectl apply -f k8s/prometheus-deployment.yml"
+                    sh "kubectl apply -f k8s/grafana-deployment.yml"
                     def prometheusPort = sh(script: "kubectl get svc prometheus -o jsonpath='{.spec.ports[0].nodePort}'", returnStdout: true).trim()
                     def grafanaPort = sh(script: "kubectl get svc grafana -o jsonpath='{.spec.ports[0].nodePort}'", returnStdout: true).trim()
                     echo "Monitoring déployé. URL Prometheus: http://${minikubeIP}:${prometheusPort}, Grafana: http://${minikubeIP}:${grafanaPort}"
@@ -114,6 +114,7 @@ stage('Run Kubernetes Deployment') {
         }
     }
 }
+
 
 
 
