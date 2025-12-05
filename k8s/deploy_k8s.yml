@@ -7,39 +7,53 @@
     minikube_cpus: 2
     minikube_memory: 4096mb
     minikube_disk: 10g
-    k8s_manifest_path: "/var/jenkins_home/k8s"   # chemin vers tes manifests
+    k8s_manifest_path: "/var/jenkins_home/k8s"
 
   tasks:
 
-    - name: Supprimer cluster Minikube existant
+    - name: Vérifier que Docker est accessible
+      command: docker info
+      register: docker_info
+      failed_when: docker_info.rc != 0
+      ignore_errors: no
+
+    - name: Supprimer cluster Minikube existant (si présent)
       command: minikube delete
       ignore_errors: yes
 
-    - name: Démarrer Minikube
-      command: >
-        minikube start
-        --driver={{ minikube_driver }}
-        --cpus={{ minikube_cpus }}
-        --memory={{ minikube_memory }}
-        --disk-size={{ minikube_disk }}
+    - name: Démarrer Minikube avec Docker driver
+      shell: |
+        minikube start \
+          --driver={{ minikube_driver }} \
+          --cpus={{ minikube_cpus }} \
+          --memory={{ minikube_memory }} \
+          --disk-size={{ minikube_disk }}
       register: minikube_start
       retries: 3
       delay: 10
       until: minikube_start.rc == 0
 
-    - name: Vérifier l'état du cluster
+    - name: Vérifier l'état du cluster Minikube
       command: minikube status
       register: minikube_status
 
     - debug:
-        var: minikube_status.stdout_lines
+        msg: "{{ minikube_status.stdout_lines }}"
+
+    - name: Définir le contexte Kubernetes pour kubectl
+      shell: minikube kubectl -- config use-context minikube
+      register: set_context
+      retries: 3
+      delay: 5
+      until: set_context.rc == 0
 
     - name: Déployer les manifests Kubernetes
-      command: minikube kubectl -- apply -f {{ k8s_manifest_path }}
+      shell: minikube kubectl -- apply -f {{ k8s_manifest_path }}
       register: deploy_k8s
       retries: 3
       delay: 5
       until: deploy_k8s.rc == 0
 
     - debug:
-        var: deploy_k8s.stdout_lines
+        msg: "{{ deploy_k8s.stdout_lines }}"
+
