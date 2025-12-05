@@ -86,7 +86,7 @@ stage('Run Kubernetes Deployment') {
             }
         }
 
-    }
+    
 
     stage('Monitoring') {
             steps {
@@ -114,6 +114,7 @@ stage('Run Kubernetes Deployment') {
         }
     }
 }
+
 
 
 
