@@ -101,7 +101,7 @@ stage('Run Kubernetes Deployment') {
             }
         }
     }
-}
+
 
 
     post {
@@ -114,6 +114,7 @@ stage('Run Kubernetes Deployment') {
         }
     }
 }
+
 
 
 
