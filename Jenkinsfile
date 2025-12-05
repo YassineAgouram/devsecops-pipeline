@@ -80,7 +80,7 @@ stage('Install kubectl') {
 
 stage('Run Kubernetes Deployment') {
             steps {
-                sh 'kubectl --kubeconfig=/root/.kube/config apply -f k8s/
+                sh 'minikube kubectl -- apply -f k8s/
 '
             }
         }
@@ -98,6 +98,7 @@ stage('Run Kubernetes Deployment') {
         }
     }
 }
+
 
 
 
