@@ -58,7 +58,15 @@ stage('SonarQube Analysis') {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker -H tcp://dind:2375 build -t starbucks-app:latest ."
+                sh """
+docker run \
+  -v $(pwd):/workspace \
+  gcr.io/kaniko-project/executor:latest \
+  --dockerfile=Dockerfile \
+  --context=/workspace \
+  --destination=starbucks-app:latest
+"""
+
 
                 sh "docker build -t ${IMAGE_NAME}:latest ."
             }
@@ -81,6 +89,7 @@ stage('SonarQube Analysis') {
         }
     }
 }
+
 
 
 
