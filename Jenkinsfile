@@ -80,7 +80,7 @@ stage('Install kubectl') {
 
   stage('Run Minikube Deployment') {
     steps { sh """
-        /var/jenkins_home/bin/kubectl apply -f k8s/
+            kubectl apply -f k8s/
     """
 
 
@@ -98,6 +98,7 @@ stage('Install kubectl') {
         }
     }
 }
+
 
 
 
