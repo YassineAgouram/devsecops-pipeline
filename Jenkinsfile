@@ -82,8 +82,8 @@ stage('Install kubectl') {
     steps {
         sh "/var/jenkins_home/bin/kubectl apply -f k8s/"
     }
-}
-
+  }
+ } 
 
     post {
         always {
