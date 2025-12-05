@@ -88,15 +88,25 @@ stage('Run Kubernetes Deployment') {
 
     }
 
-    stage('Deploy Monitoring') {
+stage('Monitoring') {
     steps {
-        echo "Déploiement Prometheus et Grafana sur Minikube"
-        sh "minikube kubectl -- apply -f k8s/prometheus-deployment.yml"
-        sh "minikube kubectl -- apply -f k8s/grafana-deployment.yml"
-        echo "Monitoring déployé. URL Prometheus: http://$(minikube ip):<NodePort>, Grafana: http://$(minikube ip):<NodePort>"
+        script {
+            // Récupérer l'IP de Minikube
+            def minikubeIP = sh(script: "minikube ip", returnStdout: true).trim()
+            
+            // Déployer Prometheus et Grafana via manifests
+            sh "kubectl apply -f k8s/monitoring/prometheus.yml"
+            sh "kubectl apply -f k8s/monitoring/grafana.yml"
+            
+            // Récupérer les NodePort (exemple, à adapter selon tes manifests)
+            def prometheusPort = sh(script: "kubectl get svc prometheus -o jsonpath='{.spec.ports[0].nodePort}'", returnStdout: true).trim()
+            def grafanaPort = sh(script: "kubectl get svc grafana -o jsonpath='{.spec.ports[0].nodePort}'", returnStdout: true).trim()
+            
+            // Afficher les URLs
+            echo "Monitoring déployé. URL Prometheus: http://${minikubeIP}:${prometheusPort}, Grafana: http://${minikubeIP}:${grafanaPort}"
+        }
     }
 }
-
 
 
     post {
@@ -109,6 +119,7 @@ stage('Run Kubernetes Deployment') {
         }
     }
 }
+
 
 
 
