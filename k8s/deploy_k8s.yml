@@ -1,0 +1,45 @@
+---
+- name: Déploiement Kubernetes avec Minikube
+  hosts: localhost
+  gather_facts: false
+  vars:
+    minikube_driver: docker
+    minikube_cpus: 2
+    minikube_memory: 4096mb
+    minikube_disk: 10g
+    k8s_manifest_path: "/var/jenkins_home/k8s"   # chemin vers tes manifests
+
+  tasks:
+
+    - name: Supprimer cluster Minikube existant
+      command: minikube delete
+      ignore_errors: yes
+
+    - name: Démarrer Minikube
+      command: >
+        minikube start
+        --driver={{ minikube_driver }}
+        --cpus={{ minikube_cpus }}
+        --memory={{ minikube_memory }}
+        --disk-size={{ minikube_disk }}
+      register: minikube_start
+      retries: 3
+      delay: 10
+      until: minikube_start.rc == 0
+
+    - name: Vérifier l'état du cluster
+      command: minikube status
+      register: minikube_status
+
+    - debug:
+        var: minikube_status.stdout_lines
+
+    - name: Déployer les manifests Kubernetes
+      command: minikube kubectl -- apply -f {{ k8s_manifest_path }}
+      register: deploy_k8s
+      retries: 3
+      delay: 5
+      until: deploy_k8s.rc == 0
+
+    - debug:
+        var: deploy_k8s.stdout_lines
