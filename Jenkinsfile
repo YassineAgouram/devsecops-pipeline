@@ -81,7 +81,7 @@ stage('Install kubectl') {
 stage('Run Kubernetes Deployment') {
             steps {
                // sh ' kubectl  --apply -f k8s/'
-               sh 'ansible-playbook deploy_k8s.yml'
+               sh 'ansible-playbook k8s/deploy_k8s.yml'
 
             }
         }
@@ -99,6 +99,7 @@ stage('Run Kubernetes Deployment') {
         }
     }
 }
+
 
 
 
