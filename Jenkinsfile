@@ -88,6 +88,16 @@ stage('Run Kubernetes Deployment') {
 
     }
 
+    stage('Deploy Monitoring') {
+    steps {
+        echo "Déploiement Prometheus et Grafana sur Minikube"
+        sh "minikube kubectl -- apply -f k8s/prometheus-deployment.yml"
+        sh "minikube kubectl -- apply -f k8s/grafana-deployment.yml"
+        echo "Monitoring déployé. URL Prometheus: http://$(minikube ip):<NodePort>, Grafana: http://$(minikube ip):<NodePort>"
+    }
+}
+
+
 
     post {
         always {
@@ -99,6 +109,7 @@ stage('Run Kubernetes Deployment') {
         }
     }
 }
+
 
 
 
