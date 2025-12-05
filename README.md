@@ -1,1 +1,2 @@
-# devsecops pipeline
+# DevSecops pipeline
+![Pipeline Diagram](images/devsec.png)
