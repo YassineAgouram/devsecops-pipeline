@@ -66,12 +66,15 @@ stage('SonarQube Analysis') {
 stage('Install kubectl') {
     steps {
         sh """
-        curl -LO "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
+        mkdir -p \$HOME/bin
+        curl -LO https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl
         chmod +x kubectl
-        mv kubectl /usr/local/bin/
+        mv kubectl \$HOME/bin/kubectl
+        export PATH=\$HOME/bin:\$PATH
         """
     }
 }
+
 
         
 
@@ -92,6 +95,7 @@ stage('Install kubectl') {
         }
     }
 }
+
 
 
 
